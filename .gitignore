@@ -1,0 +1,31 @@
+node_modules/
+.env
+.env.local
+.next/
+dist/
+build/
+.DS_Store
+*.log
+# Root-level safety net. Each sub-project (backend/, frontend/admin/,
+# frontend/website/, mobile/) has its own .gitignore — this catches anything
+# at the repo root or anything those might miss.
+
+node_modules/
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.log
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+.next/
+.expo/
+web-build/
+
+# OS/editor cruft
+Thumbs.db
+.vscode/
+.idea/

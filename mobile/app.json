@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "MedEquip",
+    "slug": "medical-equipment-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#0b1f1d"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.medequip.mobile"
+    },
+    "android": {
+      "package": "com.medequip.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#0b1f1d"
+      }
+    },
+    "extra": {
+      "apiBaseUrl": "http://localhost:5000/api"
+    }
+  }
+}
