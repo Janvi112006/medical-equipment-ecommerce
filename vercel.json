@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd frontend/website && npm install && npm run build",
-  "outputDirectory": "frontend/website/.next",
-  "installCommand": "cd frontend/website && npm install"
+  "installCommand": "npm install --prefix frontend/website",
+  "buildCommand": "npm run build --prefix frontend/website",
+  "outputDirectory": "frontend/website/.next"
 }
