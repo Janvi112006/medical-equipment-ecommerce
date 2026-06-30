@@ -10,7 +10,7 @@ const products = [
     category: "Diagnostic",
     price: 2499,
     stock: 25,
-    images: ["https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600"],
+    images: ["/products/bp-monitor.jpg"],
   },
   {
     name: "Digital Thermometer",
@@ -18,7 +18,7 @@ const products = [
     category: "Diagnostic",
     price: 499,
     stock: 50,
-    images: ["https://images.unsplash.com/photo-1584362917165-526a968579e8?w=600"],
+    images: ["/products/thermometer.jpg"],
   },
   {
     name: "Pulse Oximeter",
@@ -26,7 +26,7 @@ const products = [
     category: "Diagnostic",
     price: 1299,
     stock: 30,
-    images: ["https://images.unsplash.com/photo-1584362917165-526a968579e8?w=600"],
+    images: ["/products/pulse-oximeter.jpg"],
   },
   {
     name: "Glucometer",
@@ -34,7 +34,7 @@ const products = [
     category: "Diagnostic",
     price: 899,
     stock: 40,
-    images: ["https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=600"],
+    images: ["/products/glucometer.jpg"],
   },
   {
     name: "Stethoscope",
@@ -42,7 +42,7 @@ const products = [
     category: "General",
     price: 799,
     stock: 60,
-    images: ["https://images.unsplash.com/photo-1580281658626-ee379f3cce93?w=600"],
+    images: ["/products/stethoscope.jpg"],
   },
   {
     name: "ECG Machine",
@@ -50,7 +50,7 @@ const products = [
     category: "Cardiology",
     price: 45000,
     stock: 5,
-    images: ["https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600"],
+    images: ["/products/ecg-machine.jpg"],
   },
   {
     name: "Nebulizer",
@@ -58,7 +58,7 @@ const products = [
     category: "Respiratory",
     price: 1999,
     stock: 20,
-    images: ["https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600"],
+    images: ["/products/nebulizer.jpg"],
   },
   {
     name: "Oxygen Concentrator",
@@ -66,7 +66,7 @@ const products = [
     category: "Respiratory",
     price: 38000,
     stock: 4,
-    images: ["https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600"],
+    images: ["/products/oxygen-concentrator.jpg"],
   },
   {
     name: "Wheelchair",
@@ -74,7 +74,7 @@ const products = [
     category: "Mobility",
     price: 8500,
     stock: 10,
-    images: ["https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=600"],
+    images: ["/products/wheelchair.jpg"],
   },
   {
     name: "Surgical Mask",
@@ -82,7 +82,7 @@ const products = [
     category: "Safety",
     price: 250,
     stock: 500,
-    images: ["https://images.unsplash.com/photo-1584634731339-252c581abfc5?w=600"],
+    images: ["/products/surgical-mask.jpg"],
   },
   {
     name: "Syringe",
@@ -90,7 +90,7 @@ const products = [
     category: "Consumables",
     price: 20,
     stock: 950,
-    images: ["https://images.unsplash.com/photo-1584362917165-526a968579e8?w=600"],
+    images: ["/products/syringe.jpg"],
   },
   {
     name: "Infrared Thermometer",
@@ -98,7 +98,7 @@ const products = [
     category: "Diagnostic",
     price: 1499,
     stock: 35,
-    images: ["https://images.unsplash.com/photo-1584362917165-526a968579e8?w=600"],
+    images: ["/products/infrared.jpg"],
   },
 ];
 
