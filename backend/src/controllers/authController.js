@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
+const sendEmail = require("../utils/emailService");
 
 // POST /api/auth/register
 // Field-level validation (name/email/password/phone) is handled by
@@ -31,6 +32,17 @@ const registerUser = async (req, res, next) => {
     });
 
     const token = generateToken(user._id, user.role);
+await sendEmail({
+  to: user.email,
+  subject: "Welcome to MedEquip",
+  text: `Hi ${user.name},
+
+Welcome to MedEquip!
+
+Your account has been created successfully.
+
+Thank you for choosing MedEquip.`,
+});
 
     res.status(201).json({
       success: true,

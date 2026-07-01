@@ -3,6 +3,7 @@ const razorpayInstance = require("../config/razorpay");
 const Order = require("../models/Order");
 const addHistoryEntry = require("../utils/addHistoryEntry");
 const notifyOrderStatusChange = require("../utils/notifyOrderStatusChange");
+const sendEmail = require("../utils/emailService");
 
 // POST /api/payments/create-order
 // Body validation (orderId) handled by createOrderRules + validateRequest.
@@ -113,6 +114,18 @@ const verifyPayment = async (req, res, next) => {
     order.status = "confirmed"; // payment verified -> order moves from "pending" to "confirmed"
     addHistoryEntry(order, "confirmed", "Payment verified successfully via Razorpay", null);
     await order.save();
+await sendEmail({
+  to: req.user.email,
+  subject: "Payment Successful - MedEquip",
+  text: `Hi ${req.user.name},
+
+Your payment for Order #${order._id} was successful.
+
+Order Status: ${order.status}
+Amount Paid: ₹${order.totalAmount}
+
+Thank you for shopping with MedEquip!`,
+});
 
     notifyOrderStatusChange(order, previousStatus, order.status); // placeholder — see utils/notifyOrderStatusChange.js
 

@@ -3,7 +3,7 @@ const Order = require("../models/Order");
 const addHistoryEntry = require("../utils/addHistoryEntry");
 const notifyOrderStatusChange = require("../utils/notifyOrderStatusChange");
 const fetchTrackingStatus = require("../utils/trackingService");
-
+const sendEmail = require("../utils/emailService");
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 // GET /api/orders/my
@@ -97,7 +97,7 @@ const updateOrderStatus = async (req, res, next) => {
 
     const { status, note } = req.body;
 
-    const order = await Order.findById(id);
+    const order = await Order.findById(id).populate("user", "name email");
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
@@ -105,10 +105,27 @@ const updateOrderStatus = async (req, res, next) => {
     const previousStatus = order.status;
     order.status = status;
     addHistoryEntry(order, status, note || `Status updated to "${status}" by admin`, req.user._id);
-    await order.save();
+   await order.save();
 
-    notifyOrderStatusChange(order, previousStatus, status); // placeholder — see utils/notifyOrderStatusChange.js
+if (status === "shipped") {
+  await sendEmail({
+    to: order.user.email,
+    subject: "Your MedEquip Order Has Been Shipped 🚚",
+    text: `Hi ${order.user.name},
 
+Great news!
+
+Your order has been shipped.
+
+Order ID: ${order._id}
+
+You can log in to MedEquip anytime to track your order.
+
+Thank you for shopping with MedEquip!`,
+  });
+}
+
+notifyOrderStatusChange(order, previousStatus, status);
     res.status(200).json({ success: true, message: "Order status updated", data: order });
   } catch (error) {
     next(error);
