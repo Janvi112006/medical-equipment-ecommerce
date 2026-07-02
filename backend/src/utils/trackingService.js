@@ -1,21 +1,94 @@
-// PLACEHOLDER third-party tracking integration.
-// TRACKING_API_BASE_URL / TRACKING_API_KEY are reserved in .env.example, but
-// no real courier/tracking provider has been finalized yet (see
-// docs/Phase-01_Project_Planning.md). This returns a deterministic mocked
-// status so Order.tracking, the history timeline, and the tracking APIs can
-// all be built and tested now — and swapped for a real HTTP call later
-// without changing any of the controllers that call this function.
-const fetchTrackingStatus = async ({ provider, trackingId }) => {
-  // A real integration would look something like:
-  //   const res = await axios.get(`${process.env.TRACKING_API_BASE_URL}/track/${trackingId}`, {
-  //     headers: { Authorization: `Bearer ${process.env.TRACKING_API_KEY}` },
-  //   });
-  //   return { status: res.data.status, trackingUrl: res.data.trackingUrl };
+const axios = require("axios");
 
-  return {
-    status: "in_transit", // mocked — always returns this until a real provider is wired in
-    trackingUrl: trackingId ? `https://tracking.example.com/${provider || "unknown"}/${trackingId}` : null,
-  };
-};
+const SHIPROCKET_BASE_URL = "https://apiv2.shiprocket.in/v1/external";
+
+let cachedToken = null;
+let tokenExpiry = 0;
+
+async function getShiprocketToken() {
+  if (cachedToken && Date.now() < tokenExpiry) {
+    return cachedToken;
+  }
+
+  const email = process.env.SHIPROCKET_EMAIL;
+  const password = process.env.SHIPROCKET_PASSWORD;
+
+  if (!email || !password) {
+    throw new Error("Shiprocket credentials missing in .env");
+  }
+
+  const response = await axios.post(`${SHIPROCKET_BASE_URL}/auth/login`, {
+    email,
+    password,
+  });
+
+  const token = response.data?.token;
+  if (!token) {
+    throw new Error("Failed to get Shiprocket token");
+  }
+
+  cachedToken = token;
+  tokenExpiry = Date.now() + 8 * 24 * 60 * 60 * 1000; // cache for 8 days
+  return cachedToken;
+}
+
+async function fetchTrackingStatus({ provider, trackingId }) {
+  if (!trackingId) {
+    return {
+      status: "pending",
+      trackingUrl: null,
+      provider: provider || "shiprocket",
+      raw: null,
+    };
+  }
+
+  try {
+    const token = await getShiprocketToken();
+
+    const response = await axios.get(
+      `${SHIPROCKET_BASE_URL}/courier/track/awb/${trackingId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const payload = response.data;
+    const shipment =
+      payload?.tracking_data?.shipment_track?.[0] ||
+      payload?.tracking_data?.track_status?.[0] ||
+      null;
+
+    const currentStatus =
+      payload?.tracking_data?.shipment_status ||
+      shipment?.current_status ||
+      shipment?.status ||
+      "in_transit";
+
+    return {
+      status: String(currentStatus).toLowerCase().replace(/\s+/g, "_"),
+      trackingUrl: trackingId
+        ? `https://app.shiprocket.in/tracking/${trackingId}`
+        : null,
+      provider: provider || "shiprocket",
+      raw: payload,
+    };
+  } catch (error) {
+    console.error(
+      "Shiprocket tracking error:",
+      error.response?.data || error.message
+    );
+
+    return {
+      status: "tracking_unavailable",
+      trackingUrl: trackingId
+        ? `https://app.shiprocket.in/tracking/${trackingId}`
+        : null,
+      provider: provider || "shiprocket",
+      raw: error.response?.data || null,
+    };
+  }
+}
 
 module.exports = fetchTrackingStatus;
