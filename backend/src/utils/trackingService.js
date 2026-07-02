@@ -81,7 +81,7 @@ async function fetchTrackingStatus({ provider, trackingId }) {
     );
 
     return {
-      status: "tracking_unavailable",
+      status: "not_shipped",
       trackingUrl: trackingId
         ? `https://app.shiprocket.in/tracking/${trackingId}`
         : null,
