@@ -62,9 +62,29 @@ export const AuthProvider = ({ children }) => {
       return { success: false, message: getErrorMessage(error) };
     }
   }, []);
+  const sendOtp = useCallback(async (email) => {
+    try {
+      const response = await apiClient.post("/auth/send-otp", { email });
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      return { success: false, message: getErrorMessage(error) };
+    }
+  }, []);
+
+  const verifyOtp = useCallback(async (email, otp) => {
+    try {
+      const response = await apiClient.post("/auth/verify-otp", { email, otp });
+      persistSession(response.data.data);
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: getErrorMessage(error) };
+    }
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, initializing, login, register, logout }}>
+   <AuthContext.Provider
+  value={{ user, token, initializing, login, register, sendOtp, verifyOtp, logout }}
+>
       {children}
     </AuthContext.Provider>
   );

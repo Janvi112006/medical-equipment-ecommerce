@@ -95,6 +95,72 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+const sendOtp = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otpCode = otp;
+    user.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    await sendEmail({
+      to: user.email,
+      subject: "Your MedEquip OTP Code",
+      text: `Hi ${user.name},
+
+Your OTP code is: ${otp}
+
+This OTP is valid for 10 minutes.
+
+Regards,
+MedEquip Team`,
+    });
+
+    res.status(200).json({ success: true, message: "OTP sent successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const verifyOtp = async (req, res, next) => {
+  try {
+    const { email, otp } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user || user.otpCode !== otp || user.otpExpiresAt < new Date()) {
+      return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+    }
+
+    user.isVerified = true;
+    user.otpCode = null;
+    user.otpExpiresAt = null;
+    await user.save();
+
+    const token = generateToken(user._id, user.role);
+
+    res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        token,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // GET /api/auth/profile  (protected)
 const getProfile = async (req, res, next) => {
   try {
@@ -105,4 +171,4 @@ const getProfile = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getProfile };
+module.exports = { registerUser, loginUser, sendOtp, verifyOtp, getProfile };

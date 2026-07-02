@@ -51,12 +51,21 @@ const LoginView = () => {
           </button>
         </form>
 
-        <p className="cell-muted" style={{ marginTop: 18, fontSize: 13 }}>
-          Don't have an account?{" "}
-          <Link href={`/register?redirect=${encodeURIComponent(redirect)}`} style={{ textDecoration: "underline" }}>
-            Create one
-          </Link>
-        </p>
+        <div style={{ marginTop: 18, fontSize: 13 }}>
+  <p className="cell-muted" style={{ marginBottom: 8 }}>
+    Prefer OTP login?{" "}
+    <Link href="/otp-login" style={{ textDecoration: "underline" }}>
+      Login with OTP
+    </Link>
+  </p>
+
+  <p className="cell-muted">
+    Don't have an account?{" "}
+    <Link href={`/register?redirect=${encodeURIComponent(redirect)}`} style={{ textDecoration: "underline" }}>
+      Create one
+    </Link>
+  </p>
+</div>
       </div>
     </div>
   );

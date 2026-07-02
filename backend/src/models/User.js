@@ -34,6 +34,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+otpCode: {
+  type: String,
+  default: null,
+},
+otpExpiresAt: {
+  type: Date,
+  default: null,
+},
   },
   { timestamps: true }
 );
