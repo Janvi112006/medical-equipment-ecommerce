@@ -65,6 +65,11 @@ const Header = () => {
               <Link href="/orders" onClick={() => setMenuOpen(false)}>
                 My orders
               </Link>
+{user.role === "admin" && (
+  <Link href="/admin" onClick={() => setMenuOpen(false)}>
+    Admin Dashboard
+  </Link>
+)}
               <button className="site-nav-button" onClick={handleLogout}>
                 Log out
               </button>
