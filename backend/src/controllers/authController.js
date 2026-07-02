@@ -160,6 +160,27 @@ const verifyOtp = async (req, res, next) => {
     next(error);
   }
 };
+const saveFcmToken = async (req, res, next) => {
+  try {
+    const { fcmToken } = req.body;
+
+    if (!fcmToken) {
+      return res.status(400).json({ success: false, message: "FCM token is required" });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    user.fcmToken = fcmToken;
+    await user.save();
+
+    res.status(200).json({ success: true, message: "FCM token saved successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // GET /api/auth/profile  (protected)
 const getProfile = async (req, res, next) => {
@@ -170,5 +191,11 @@ const getProfile = async (req, res, next) => {
     next(error);
   }
 };
-
-module.exports = { registerUser, loginUser, sendOtp, verifyOtp, getProfile };
+module.exports = {
+  registerUser,
+  loginUser,
+  sendOtp,
+  verifyOtp,
+  saveFcmToken,
+  getProfile,
+};

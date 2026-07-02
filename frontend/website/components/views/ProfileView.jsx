@@ -6,6 +6,7 @@ import apiClient, { getErrorMessage } from "../../lib/apiClient";
 import { useAuth } from "../../context/AuthContext";
 import LoadingState from "../LoadingState";
 import ErrorBanner from "../ErrorBanner";
+import EnableNotifications from "../EnableNotifications";
 
 const emptyAddress = { fullName: "", phone: "", addressLine: "", city: "", state: "", pincode: "" };
 
@@ -101,9 +102,12 @@ const ProfileView = () => {
             <div>{profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString() : "—"}</div>
           </div>
         </div>
-        <Link href="/orders" className="btn btn-secondary btn-sm" style={{ marginTop: 8 }}>
-          View order history
-        </Link>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 8 }}>
+  <Link href="/orders" className="btn btn-secondary btn-sm">
+    View order history
+  </Link>
+  <EnableNotifications />
+</div>
       </div>
 
       <div className="card card-pad">

@@ -4,6 +4,7 @@ const addHistoryEntry = require("../utils/addHistoryEntry");
 const notifyOrderStatusChange = require("../utils/notifyOrderStatusChange");
 const fetchTrackingStatus = require("../utils/trackingService");
 const sendEmail = require("../utils/emailService");
+const sendPushNotification = require("../utils/sendPushNotification");
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 // GET /api/orders/my
@@ -70,7 +71,7 @@ const getOrderById = async (req, res, next) => {
       return res.status(400).json({ success: false, message: "Invalid order id" });
     }
 
-    const order = await Order.findById(id).populate("user", "name email");
+    const order = await Order.findById(id).populate("user", "name email fcmToken");
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
@@ -123,6 +124,11 @@ You can log in to MedEquip anytime to track your order.
 
 Thank you for shopping with MedEquip!`,
   });
+await sendPushNotification({
+  token: order.user.fcmToken,
+  title: "Order Shipped 🚚",
+  body: `Your MedEquip order #${order._id.toString().slice(-6)} has been shipped.`,
+});
 }
 
 notifyOrderStatusChange(order, previousStatus, status);
